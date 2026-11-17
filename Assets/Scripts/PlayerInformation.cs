@@ -11,7 +11,7 @@ public class PlayerInformation : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentSpells.Add(new EquippedSpells(new Fireball(), 1));
+        currentSpells.Add(new EquippedSpells(new Fireball(), 1)); //TESTING
     }
 
     // Update is called once per frame
