@@ -1,55 +1,52 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem; // Required for Mouse.current
 using System.Collections;
 
 public class MenuAnimationManager : MonoBehaviour
 {
     public static MenuAnimationManager instance;
 
-    [Header("UI Refrences")]
+    [Header("UI References")]
     public CanvasGroup canvasGroup;
     public float fadeDuration = 1f;
 
-    [Header("Paralax Settings")]
+    [Header("Parallax Settings")]
     [Tooltip("Drag your menu art layer here (Background, Midground, etc.)")]
     public RectTransform[] parallaxLayers;
     [Tooltip("Match the intensity values to your layer (higher = more movement)")]
     public float[] parallaxIntensities;
     public float smoothness = 5f;
-
     private bool isTransitioning = false;
     private Vector2[] initialPositions;
-
     void Awake()
     {
-        // Singleton pattern: Ensure only one fader exists across scenes
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // Keeps this GameObject alive when loading new scenes
+            DontDestroyOnLoad(gameObject);
+            CacheParallaxPositions();
         }
         else
         {
-            Destroy(gameObject); // Destroy duplicates if returning to the main menu
+            // Hand the newly loaded MainMenu's parallax layers to the surviving fader
+            instance.parallaxLayers = this.parallaxLayers;
+            instance.parallaxIntensities = this.parallaxIntensities;
+            instance.smoothness = this.smoothness;
+            instance.CacheParallaxPositions();
+
+            Destroy(gameObject);
             return;
         }
     }
-
-    void Start()
-    {
-        CacheParallaxPositions();
-    }
-
     void Update()
     {
-        // Only run parallax if we are in the menu and not currently fading to gameplay
         if (!isTransitioning)
         {
             ApplyParallax();
         }
     }
-
-    void CacheParallaxPositions()
+    public void CacheParallaxPositions()
     {
         if (parallaxLayers != null && parallaxLayers.Length > 0)
         {
@@ -63,25 +60,25 @@ public class MenuAnimationManager : MonoBehaviour
             }
         }
     }
-
     void ApplyParallax()
     {
-        if (parallaxLayers == null || initialPositions == null) 
+        if (parallaxLayers == null || initialPositions == null || Mouse.current == null)
             return;
 
-        // Get normalized mouse position (-0.5 to 0.5)
+        // Read mouse position using the New Input System
+        Vector2 rawMouse = Mouse.current.position.ReadValue();
+
+        // Normalize mouse position (-0.5 to 0.5)
         Vector2 mousePos = new Vector2(
-            (Input.mousePosition.x / Screen.width) - 0.5f,
-            (Input.mousePosition.y / Screen.height) - 0.5f
+            (rawMouse.x / Screen.width) - 0.5f,
+            (rawMouse.y / Screen.height) - 0.5f
         );
 
         for (int i = 0; i < parallaxLayers.Length; i++)
         {
             if (parallaxLayers[i] != null)
             {
-                // Fallback intensity if array length doesn't match layers
                 float intensity = (i < parallaxIntensities.Length) ? parallaxIntensities[i] : 15f;
-
                 Vector2 targetPosition = initialPositions[i] + (mousePos * intensity);
 
                 parallaxLayers[i].anchoredPosition = Vector2.Lerp(
@@ -93,47 +90,48 @@ public class MenuAnimationManager : MonoBehaviour
         }
     }
 
-    // Public method called by your UI buttons
     public void FadeToScene(string sceneName)
     {
+        if (isTransitioning) return;
         StartCoroutine(FadeRoutine(sceneName));
     }
+
     IEnumerator FadeRoutine(string sceneName)
     {
-        // Enable blockRaycasts so the player can't click things while fading
+        isTransitioning = true;
         canvasGroup.blocksRaycasts = true;
         float timer = 0f;
 
-        // 1. FADE IN (Alpha 0 -> 1: Screen turns black)
+        // 1. FADE IN (Alpha 0 -> 1)
         while (timer < fadeDuration)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             canvasGroup.alpha = timer / fadeDuration;
             yield return null;
         }
         canvasGroup.alpha = 1f;
 
-        // 2. Clear parallax layers array so Unity doesn't look for destroyed objects in the next scene
+        // 2. Clear parallax layers before loading next scene
         parallaxLayers = null;
 
-        // 3. LOAD SCENE ASYNCHRONOUSLY
+        // 3. LOAD SCENE
         AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
         while (!operation.isDone)
         {
             yield return null;
         }
 
-        // 4. FADE OUT (Alpha 1 -> 0: Screen reveals the new scene)
+        // 4. FADE OUT (Alpha 1 -> 0)
         timer = 0f;
         while (timer < fadeDuration)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             canvasGroup.alpha = 1f - (timer / fadeDuration);
             yield return null;
         }
         canvasGroup.alpha = 0f;
-
-        // Disable blockRaycasts so gameplay inputs work again
+        parallaxLayers = null;
+        initialPositions = null;
         canvasGroup.blocksRaycasts = false;
         isTransitioning = false;
     }
