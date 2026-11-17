@@ -1,28 +1,48 @@
-using JetBrains.Annotations;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
-
 public class EnemyAI : MonoBehaviour
 {
-    float moveSpeed = 3f;
-    public float stopDistance = 1f;
+    [SerializeField] private GameObject playerRef;
+    public static GameObject playerInputForPrefab;
+    public string EnemeyType;
+    private BasicEnemy ActiveAI;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        if (playerRef != null)
+            playerInputForPrefab = playerRef;
+        else
+            playerInputForPrefab = GameObject.FindGameObjectWithTag("Player");
+        switch(EnemeyType) 
+        {
+            case "Basic":
+                ActiveAI = new BasicEnemy(this.transform);
+                break;
+            case "Ranged":
+                ActiveAI = new RangedEnemy(this.transform);
+                break;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        MoveTowardsEnemy();
+        //ACTIVE AI LOGIC HERE   
+    }
+    
+}
+
+public class BasicEnemy
+{
+    protected Transform Mylegsbro;
+    float moveSpeed = 3f;
+    public float stopDistance = 1f;
+    public BasicEnemy(Transform transform)
+    {
+        Mylegsbro = transform;
     }
     public void MoveTowardsEnemy()
     {
-        if (player == null) return;
+        if (EnemyAI.playerInputForPrefab == null) return;
 
         if (!InRange())
             MoveTowardsPlayer();
@@ -30,23 +50,23 @@ public class EnemyAI : MonoBehaviour
     }
     Vector3 GetDirectionToPlayer()
     {
-        Vector3 direction = player.position - transform.position;
+        Vector3 direction = EnemyAI.playerInputForPrefab.transform.position - Mylegsbro.transform.position;
         direction.y = 0f;
         return direction;
     }
     bool InRange()
     {
-        return  GetDirectionToPlayer().magnitude <= stopDistance;
+        return GetDirectionToPlayer().magnitude <= stopDistance;
     }
     public void MoveTowardsPlayer()
     {
         Vector3 moveDir = GetDirectionToPlayer().normalized;
-        transform.position += moveDir * moveSpeed * Time.deltaTime;
+        Mylegsbro.transform.position += moveDir * moveSpeed * Time.deltaTime;
     }
 }
-public class RangedEnemy : EnemyAI
+public class RangedEnemy : BasicEnemy
 {
-     void Reset()
+    public RangedEnemy(Transform transform) : base(transform)
     {
         stopDistance = 8f;
     }
