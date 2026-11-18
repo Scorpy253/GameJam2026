@@ -1,10 +1,15 @@
+using Unity.VisualScripting;
 using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private GameObject playerRef;
     public static GameObject playerInputForPrefab;
-    public string EnemeyType;
+    public string EnemyType;
+    public string EnemyElement;
     private BasicEnemy ActiveAI;
+
+    public float spdMulti;
+    public float dmgMulti;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -12,7 +17,7 @@ public class EnemyAI : MonoBehaviour
             playerInputForPrefab = playerRef;
         else
             playerInputForPrefab = GameObject.FindGameObjectWithTag("Player");
-        switch(EnemeyType) 
+        switch(EnemyType) 
         {
             case "Basic":
                 ActiveAI = new BasicEnemy(this.transform);
@@ -26,11 +31,19 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //ACTIVE AI LOGIC HERE   
+        ActiveAI.MoveTowardsEnemy();
+        //ACTIVE AI LOGIC HERE
     }
-    
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (ActiveAI == null) return;
+        Debug.Log("Hit: " + collision.gameObject.name + " | Tag: " + collision.gameObject.tag);
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("DIED");
+        }
+    }
 }
-
 public class BasicEnemy
 {
     protected Transform Mylegsbro;
@@ -46,12 +59,11 @@ public class BasicEnemy
 
         if (!InRange())
             MoveTowardsPlayer();
-
     }
     Vector3 GetDirectionToPlayer()
     {
         Vector3 direction = EnemyAI.playerInputForPrefab.transform.position - Mylegsbro.transform.position;
-        direction.y = 0f;
+        direction.z = 0f;
         return direction;
     }
     bool InRange()
