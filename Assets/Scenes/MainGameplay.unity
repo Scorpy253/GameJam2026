@@ -336,6 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   castingPress: 
+  Casting: 0
 --- !u!50 &301762102
 Rigidbody2D:
   serializedVersion: 5
