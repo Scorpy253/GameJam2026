@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a7732903a2fe924d8fe52fc10374d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  enemyPrefab: {fileID: 4477781387790757049, guid: 54d4618b3c82a374e8c7b117f3c0a600, type: 3}
+  enemyPrefab: {fileID: 4477781387790757049, guid: 582d9f39a2fabb5469e678fa4b3d0838, type: 3}
   spawnPoints:
   - {fileID: 864721175}
   - {fileID: 704293499}
@@ -742,7 +742,8 @@ GameObject:
   - component: {fileID: 1558320865}
   - component: {fileID: 1558320864}
   - component: {fileID: 1558320863}
-  m_Layer: 0
+  - component: {fileID: 1558320870}
+  m_Layer: 7
   m_Name: TheWitch
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -956,6 +957,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1558320870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1558320862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60a5a41202ae25f45957c41a858c55de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpellExecutor
 --- !u!1 &1581107952
 GameObject:
   m_ObjectHideFlags: 0

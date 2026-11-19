@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 public class EnemyAI : MonoBehaviour
@@ -7,7 +8,7 @@ public class EnemyAI : MonoBehaviour
     public string EnemyType;
     public string EnemyElement;
     private BasicEnemy ActiveAI;
-
+    public GameObject EnemySpells;
     public float spdMulti;
     public float dmgMulti;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -20,10 +21,10 @@ public class EnemyAI : MonoBehaviour
         switch(EnemyType) 
         {
             case "Basic":
-                ActiveAI = new BasicEnemy(this.transform);
+                ActiveAI = new BasicEnemy(this.transform, EnemyElement);
                 break;
             case "Ranged":
-                ActiveAI = new RangedEnemy(this.transform);
+                ActiveAI = new RangedEnemy(this.transform, EnemyElement);
                 break;
         }
     }
@@ -32,41 +33,48 @@ public class EnemyAI : MonoBehaviour
     void Update()
     {
         ActiveAI.MoveTowardsEnemy();
+        ActiveAI.Cooldown += Time.deltaTime;
         //ACTIVE AI LOGIC HERE
     }
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnTriggerStay2D(Collider2D collision)
     {
         if (ActiveAI == null) return;
-        Debug.Log("Hit: " + collision.gameObject.name + " | Tag: " + collision.gameObject.tag);
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player")&& EnemyType == "Basic" && ActiveAI.Cooldown >= ActiveAI.CooldownSet)
         {
             Debug.Log("DIED");
+            ActiveAI.Cooldown = 0f;
         }
     }
 }
 public class BasicEnemy
 {
     protected Transform Mylegsbro;
+    protected string MyElement;
     float moveSpeed = 3f;
     public float stopDistance = 1f;
-    public BasicEnemy(Transform transform)
+    public float Cooldown;
+    public float CooldownSet;
+    public BasicEnemy(Transform transform, string element)
     {
         Mylegsbro = transform;
+        MyElement = element;
+        CooldownSet = 1;
+        Cooldown = 0;
     }
-    public void MoveTowardsEnemy()
+    public virtual void MoveTowardsEnemy()
     {
         if (EnemyAI.playerInputForPrefab == null) return;
 
         if (!InRange())
             MoveTowardsPlayer();
     }
-    Vector3 GetDirectionToPlayer()
+    public Vector3 GetDirectionToPlayer()
     {
         Vector3 direction = EnemyAI.playerInputForPrefab.transform.position - Mylegsbro.transform.position;
         direction.z = 0f;
         return direction;
     }
-    bool InRange()
+    public bool InRange()
     {
         return GetDirectionToPlayer().magnitude <= stopDistance;
     }
@@ -78,8 +86,44 @@ public class BasicEnemy
 }
 public class RangedEnemy : BasicEnemy
 {
-    public RangedEnemy(Transform transform) : base(transform)
+    private static Dictionary<string, GameObject> spellCache = new Dictionary<string, GameObject>();
+    GameObject loadedSpell;
+    bool test = true;
+    public RangedEnemy(Transform transform, string element) : base(transform,element)
     {
         stopDistance = 8f;
+        loadedSpell = LoadSpellByElement(element);
+        CooldownSet = 3f;
+    }
+    private GameObject LoadSpellByElement(string element)
+    {
+        //if (string.IsNullOrEmpty(element)) return null;
+        if (spellCache.TryGetValue(element, out GameObject cachedSpell))
+            return cachedSpell;
+        GameObject loadedSpell = Resources.Load<GameObject>($"SpellPrefabs/BulletPlaceholder");
+
+        if (loadedSpell == null)
+            Debug.LogWarning($"Spell prefab not found at Resources/Spells/BulletPlaceholder");
+        else
+            spellCache[element] = loadedSpell;
+
+        return loadedSpell;
+    }
+    public override void MoveTowardsEnemy()
+    {
+        if (EnemyAI.playerInputForPrefab == null) return;
+
+        if (!InRange())
+            MoveTowardsPlayer();
+        else ShootPlayer();
+    }
+    public void ShootPlayer()
+    {
+        if (Cooldown >= CooldownSet)
+        {
+            GameObject obj = Object.Instantiate(loadedSpell, Mylegsbro.transform.position, Quaternion.identity);
+            obj.GetComponent<MoveProjectile>().TargetDirection = GetDirectionToPlayer().normalized;
+            Cooldown = 0f;
+        }
     }
 }
