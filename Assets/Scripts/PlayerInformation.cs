@@ -28,6 +28,7 @@ public class EquippedSpells
     public float SpellScaling;
     public int SpellSlot;
     public SpellsList.Arrow[] SpellArrow;
+    public float SpellCooldown;
     public EquippedSpells(SpellsList data, int slot)
     {
         SpellName = data.spellName;
@@ -35,5 +36,6 @@ public class EquippedSpells
         SpellScaling = data.scaling;
         SpellSlot = slot;
         SpellArrow = data.sequence.ToArray();
+        SpellCooldown = data.spellCooldown;
     }
 }

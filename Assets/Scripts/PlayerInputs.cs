@@ -15,7 +15,7 @@ public class PlayerInputs : MonoBehaviour
     private Rigidbody2D mybody;
     public bool Casting = false;
     public Coroutine shiftRoutine;
-    //private SpellExecutor spellExecutor;
+    private SpellExecutor spellExecutor;
     private PlayerInformation playerInfo;
     private InputAction shiftAction;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,7 +23,7 @@ public class PlayerInputs : MonoBehaviour
     {
         mybody = GetComponent<Rigidbody2D>();
         playerInfo = GetComponent<PlayerInformation>();
-        //spellExecutor = GetComponent<SpellExecutor>();
+        spellExecutor = GetComponent<SpellExecutor>();
         shiftAction = GetComponent<PlayerInput>().actions["Shift"];
     }
     public void OnMove(InputValue moving)
@@ -80,6 +80,7 @@ public class PlayerInputs : MonoBehaviour
                         //Debug.Log("CORRECT");
                         if (Arrows.SpellArrow.Length == c + 1)
                         {
+                            spellExecutor.CastSpellFromSlot(Arrows.SpellSlot, mybody.transform.position);
                             Debug.Log("FIREBALLLLLLLLL");
                             //CODE TO CHOOSE SPELL
                             castingPress.Clear();
