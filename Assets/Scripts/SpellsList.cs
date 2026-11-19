@@ -8,6 +8,7 @@ public class SpellsList
     public int baseDamage;
     public float scaling;
     public List<Arrow> sequence = new List<Arrow>();
+    public float spellCooldown;
 }
 class Fireball : SpellsList
 {
@@ -18,5 +19,6 @@ class Fireball : SpellsList
         scaling = 1;
         sequence.Clear();
         sequence = new List<Arrow> {Arrow.Up,Arrow.Down,Arrow.Up};
+        spellCooldown = 5f;
     }
 }
