@@ -9,10 +9,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Map
   - Water
   - UI
-  - Enemy
+  - Enemies
   - Player
   - 
   - 
@@ -50,6 +50,9 @@ TagManager:
     locked: 0
   - name: Enemies
     uniqueID: 28509137
+    locked: 0
+  - name: UI
+    uniqueID: 263780011
     locked: 0
   m_RenderingLayers:
   - Default

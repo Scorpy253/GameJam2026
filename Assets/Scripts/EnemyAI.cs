@@ -8,7 +8,6 @@ public class EnemyAI : MonoBehaviour
     public string EnemyType;
     public string EnemyElement;
     private BasicEnemy ActiveAI;
-    public GameObject EnemySpells;
     public float spdMulti;
     public float dmgMulti;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
