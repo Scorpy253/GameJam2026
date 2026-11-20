@@ -103,12 +103,12 @@ TextureImporter:
       name: BackPlate_0
       rect:
         serializedVersion: 2
-        x: 15
-        y: 52
-        width: 227
-        height: 237
+        x: 395
+        y: 55
+        width: 1130
+        height: 1175
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: d1d8ae905a982e049af582b853ea3321
     internalID: 0
     vertices: []
     indices: 
