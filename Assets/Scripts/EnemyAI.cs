@@ -10,6 +10,7 @@ public class EnemyAI : MonoBehaviour
     private BasicEnemy ActiveAI;
     public float spdMulti;
     public float dmgMulti;
+    public float hpMulti;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -34,6 +35,11 @@ public class EnemyAI : MonoBehaviour
         ActiveAI.MoveTowardsEnemy();
         ActiveAI.Cooldown += Time.deltaTime;
         //ACTIVE AI LOGIC HERE
+        if(ActiveAI.HP <= 0)
+        {
+            ActiveAI.PayPlayer();
+            Destroy(gameObject);
+        }
     }
     void OnTriggerStay2D(Collider2D collision)
     {
@@ -53,12 +59,14 @@ public class BasicEnemy
     public float stopDistance = 1f;
     public float Cooldown;
     public float CooldownSet;
+    public int HP;
     public BasicEnemy(Transform transform, string element)
     {
         Mylegsbro = transform;
         MyElement = element;
         CooldownSet = 1;
         Cooldown = 0;
+        HP = 10;
     }
     public virtual void MoveTowardsEnemy()
     {
@@ -82,12 +90,19 @@ public class BasicEnemy
         Vector3 moveDir = GetDirectionToPlayer().normalized;
         Mylegsbro.transform.position += moveDir * moveSpeed * Time.deltaTime;
     }
+    public void TakeDamage(int totaldamage)
+    {
+        HP -= totaldamage;
+    }
+    public void PayPlayer()
+    {
+        EnemyAI.playerInputForPrefab.GetComponent<PlayerInformation>().totalGold += 10;
+    }
 }
 public class RangedEnemy : BasicEnemy
 {
     private static Dictionary<string, GameObject> spellCache = new Dictionary<string, GameObject>();
     GameObject loadedSpell;
-    bool test = true;
     public RangedEnemy(Transform transform, string element) : base(transform,element)
     {
         stopDistance = 8f;

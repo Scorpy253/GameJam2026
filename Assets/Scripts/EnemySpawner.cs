@@ -28,5 +28,6 @@ public class EnemySpawner : MonoBehaviour
         GameObject obj = Instantiate(enemyPrefab, point.position, Quaternion.identity);
         obj.GetComponent<EnemyAI>().spdMulti = 1.5f;
         obj.GetComponent<EnemyAI>().dmgMulti = 1.5f;
+        obj.GetComponent<EnemyAI>().hpMulti = 1f;
     }
 }

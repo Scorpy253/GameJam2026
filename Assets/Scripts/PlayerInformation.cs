@@ -7,6 +7,13 @@ public class PlayerInformation : MonoBehaviour
     public int BaseHP = 10;
     public float MVSPD = 2;
     public int BaseDMG = 10;
+    public int cdrLevel = 0;
+    public int totalGold = 0;
+    public int Firecoin = 0;
+    public int Watercoin = 0;
+    public int Earthcoin = 0;
+    public int Windcoin = 0;
+    public int Lightcoin = 0;
     public List<EquippedSpells> currentSpells = new List<EquippedSpells>();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

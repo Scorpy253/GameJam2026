@@ -81,7 +81,7 @@ public class PlayerInputs : MonoBehaviour
                         if (Arrows.SpellArrow.Length == c + 1)
                         {
                             spellExecutor.CastSpellFromSlot(Arrows.SpellSlot, mybody.transform.position);
-                            Debug.Log("FIREBALLLLLLLLL");
+                            //Debug.Log("FIREBALLLLLLLLL");
                             //CODE TO CHOOSE SPELL
                             castingPress.Clear();
                             return;
@@ -106,6 +106,6 @@ public class PlayerInputs : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        mybody.linearVelocity = moveInput*5;
+        mybody.linearVelocity = moveInput*playerInfo.MVSPD;
     }
 }
