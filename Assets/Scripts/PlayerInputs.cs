@@ -18,6 +18,8 @@ public class PlayerInputs : MonoBehaviour
     private SpellExecutor spellExecutor;
     private PlayerInformation playerInfo;
     private InputAction shiftAction;
+
+    [SerializeField] private CastInputUI castInputUI;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -25,6 +27,9 @@ public class PlayerInputs : MonoBehaviour
         playerInfo = GetComponent<PlayerInformation>();
         spellExecutor = GetComponent<SpellExecutor>();
         shiftAction = GetComponent<PlayerInput>().actions["Shift"];
+
+        if (castInputUI != null)
+            castInputUI.SetCastingState(false, castingPress);
     }
     public void OnMove(InputValue moving)
     {
@@ -42,6 +47,10 @@ public class PlayerInputs : MonoBehaviour
     }
     private IEnumerator WhileHoldingShift()
     {
+        Casting = true;
+        if (castInputUI != null)
+            castInputUI.SetCastingState(true, castingPress);
+
         while (shiftAction.IsPressed())
         {
             Casting = true;
@@ -49,6 +58,8 @@ public class PlayerInputs : MonoBehaviour
         }
         Casting = false;
         castingPress.Clear();
+        if (castInputUI != null)
+            castInputUI.SetCastingState(false, castingPress);
         shiftRoutine = null;
     }
     public void OnCast(InputValue casting)
@@ -67,6 +78,8 @@ public class PlayerInputs : MonoBehaviour
     void CheckSpells(SpellsList.Arrow input)
     {
         castingPress.Add(input);
+        if (castInputUI != null)
+            castInputUI.UpdateInputs(castingPress);
         int c = 0;
         foreach(SpellsList.Arrow cast in castingPress) //for every input the player recently did to cast
         {
@@ -84,6 +97,8 @@ public class PlayerInputs : MonoBehaviour
                             //Debug.Log("FIREBALLLLLLLLL");
                             //CODE TO CHOOSE SPELL
                             castingPress.Clear();
+                            if (castInputUI != null)
+                                castInputUI.UpdateInputs(castingPress);
                             return;
                         }
                         //CODE TO HIGHLIGHT ARROWS

@@ -1156,12 +1156,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 737232717}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b79b509753dcb72419c402b170b20862, type: 3}
+  m_Script: {fileID: 11500000, guid: 023bb46438905a54f9c3f486d964fac2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpellSlotMenu
-  playerInformation: {fileID: 1558320866}
-  slotsContainer: {fileID: 77768248}
-  slotPrefab: {fileID: 0}
+  playerInputs: {fileID: 1558320867}
+  canvasGroup: {fileID: 0}
+  arrowContainer: {fileID: 0}
+  arrowIconPrefab: {fileID: 0}
+  upSprite: {fileID: 21300000, guid: e37e1f8422a5cb846987c9df030e3bed, type: 3}
+  downSprite: {fileID: 21300000, guid: 85f78a9b98d55864f8d272e7e390356d, type: 3}
+  leftSprite: {fileID: 21300000, guid: 69ccf6fd509c0014bae1a09705244a7c, type: 3}
+  rightSprite: {fileID: 21300000, guid: d17ab06616330c049b27e65e3c918015, type: 3}
+  translucentAlpha: 0.5
+  fadeSpeed: 12
+  popScale: 1.2
+  settleSpeed: 16
 --- !u!114 &737232719
 MonoBehaviour:
   m_ObjectHideFlags: 0
