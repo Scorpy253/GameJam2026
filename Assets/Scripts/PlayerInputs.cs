@@ -115,8 +115,8 @@ public class PlayerInputs : MonoBehaviour
         }
     }
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        mybody.linearVelocity = moveInput*playerInfo.MVSPD;
+        mybody.linearVelocity = moveInput.normalized*playerInfo.MVSPD;
     }
 }

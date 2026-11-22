@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class PlayerInformation : MonoBehaviour
 {
     public int BaseHP = 10;
-    public float MVSPD = 2;
+    public float MVSPD = 10;
     public int BaseDMG = 10;
     public int cdrLevel = 0;
     public int totalGold = 0;
@@ -43,6 +43,10 @@ public class PlayerInformation : MonoBehaviour
             }
         }
         currentSpells.Add(newEquip);
+    }
+    public void TakeDamage(int totalDmg)
+    {
+
     }
 }
 [System.Serializable]

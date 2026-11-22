@@ -21,10 +21,10 @@ public class EnemyAI : MonoBehaviour
         switch(EnemyType) 
         {
             case "Basic":
-                ActiveAI = new BasicEnemy(this.transform, EnemyElement);
+                ActiveAI = new BasicEnemy(this.transform, EnemyElement, spdMulti, dmgMulti, hpMulti);
                 break;
             case "Ranged":
-                ActiveAI = new RangedEnemy(this.transform, EnemyElement);
+                ActiveAI = new RangedEnemy(this.transform, EnemyElement, spdMulti, dmgMulti, hpMulti);
                 break;
         }
     }
@@ -55,18 +55,20 @@ public class BasicEnemy
 {
     protected Transform Mylegsbro;
     protected string MyElement;
-    float moveSpeed = 3f;
+    float moveSpeed = 1f;
     public float stopDistance = 1f;
     public float Cooldown;
     public float CooldownSet;
-    public int HP;
-    public BasicEnemy(Transform transform, string element)
+    public float HP;
+    public float DMG;
+    public BasicEnemy(Transform transform, string element, float spdMulti, float dmgMulti, float hpMulti)
     {
         Mylegsbro = transform;
         MyElement = element;
         CooldownSet = 1;
         Cooldown = 0;
-        HP = 10;
+        HP = 10*hpMulti;
+        moveSpeed = 1*spdMulti;
     }
     public virtual void MoveTowardsEnemy()
     {
@@ -103,7 +105,7 @@ public class RangedEnemy : BasicEnemy
 {
     private static Dictionary<string, GameObject> spellCache = new Dictionary<string, GameObject>();
     GameObject loadedSpell;
-    public RangedEnemy(Transform transform, string element) : base(transform,element)
+    public RangedEnemy(Transform transform, string element, float spdMulti, float dmgMulti, float hpMulti) : base(transform,element,spdMulti,dmgMulti,hpMulti)
     {
         stopDistance = 8f;
         loadedSpell = LoadSpellByElement(element);

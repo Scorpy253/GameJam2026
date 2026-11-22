@@ -781,7 +781,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a7732903a2fe924d8fe52fc10374d68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  enemyPrefab: {fileID: 4477781387790757049, guid: 582d9f39a2fabb5469e678fa4b3d0838, type: 3}
+  enemyPrefab:
+  - {fileID: 4477781387790757049, guid: 54d4618b3c82a374e8c7b117f3c0a600, type: 3}
+  - {fileID: 4477781387790757049, guid: 582d9f39a2fabb5469e678fa4b3d0838, type: 3}
   spawnPoints:
   - {fileID: 864721175}
   - {fileID: 704293499}
@@ -1619,7 +1621,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
