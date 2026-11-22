@@ -52,7 +52,7 @@ class Earthball : SpellsList
 {
     public Earthball()
     {
-        spellName = "Windball";
+        spellName = "Earthball";
         baseDamage = 10;
         scaling = 1;
         sequence.Clear();
