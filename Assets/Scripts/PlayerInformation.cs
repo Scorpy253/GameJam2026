@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -19,12 +18,31 @@ public class PlayerInformation : MonoBehaviour
     void Start()
     {
         currentSpells.Add(new EquippedSpells(new Fireball(), 1)); //TESTING
+        currentSpells.Add(new EquippedSpells(new Waterball(), 2)); //TESTING
+        currentSpells.Add(new EquippedSpells(new Earthball(), 3)); //TESTING
+        currentSpells.Add(new EquippedSpells(new Lightball(), 4)); //TESTING
+        currentSpells.Add(new EquippedSpells(new Windball(), 5)); //TESTING
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+    public void AddSpellToEquips(SpellsList spelltoadd,int slot)
+    {
+        if (spelltoadd == null) return;
+        currentSpells.RemoveAll(s => s.SpellName == spelltoadd.spellName);
+        EquippedSpells newEquip = new EquippedSpells(spelltoadd, slot);
+        for (int i = 0; i < currentSpells.Count; i++)
+        {
+            if (currentSpells[i].SpellSlot == slot)
+            {
+                currentSpells[i] = newEquip;
+                return;
+            }
+        }
+        currentSpells.Add(newEquip);
     }
 }
 [System.Serializable]
@@ -36,6 +54,7 @@ public class EquippedSpells
     public int SpellSlot;
     public SpellsList.Arrow[] SpellArrow;
     public float SpellCooldown;
+    public bool ignored;
     public EquippedSpells(SpellsList data, int slot)
     {
         SpellName = data.spellName;
@@ -44,5 +63,6 @@ public class EquippedSpells
         SpellSlot = slot;
         SpellArrow = data.sequence.ToArray();
         SpellCooldown = data.spellCooldown;
+        ignored = data.Ignore;
     }
 }

@@ -15,6 +15,7 @@ public class SpellExecutor : MonoBehaviour
     {
         if (playerInfo == null) return;
         EquippedSpells equipped = playerInfo.currentSpells.Find(s => s.SpellSlot == targetSlot);
+        Debug.Log(equipped.SpellName.ToString());
         if (equipped == null) return;
         GameObject prefab = GetSpellPrefab(equipped.SpellName);
         if (prefab == null) return;
@@ -27,8 +28,7 @@ public class SpellExecutor : MonoBehaviour
         if (spawned.TryGetComponent(out SpellInterface spell))
         {
             spell.OnCasting(aimDir, totalDamage, gameObject.tag, transform);
-        }
-       
+        }  
     }
     private GameObject GetSpellPrefab(string spellName)
     {
@@ -36,13 +36,11 @@ public class SpellExecutor : MonoBehaviour
 
         if (spellCache.TryGetValue(spellName, out GameObject cached))
             return cached;
-
         GameObject loaded = Resources.Load<GameObject>($"SpellPrefabs/{spellName}");
         if (loaded == null)
             Debug.LogWarning($"Spell prefab not found at Resources/SpellPrefabs/{spellName}");
         else
             spellCache[spellName] = loaded;
-
         return loaded;
     }
 }

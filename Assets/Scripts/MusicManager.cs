@@ -4,18 +4,13 @@ using UnityEngine;
 public class MusicManager : MonoBehaviour
 {
     public static MusicManager Instance { get; private set; }
-
-    [Header("Settings")]
-    [Range(0f, 1f)] public float masterVolume = 0.5f;
+    [Range(0f, 1f)] public float masterVolume = 0.5f; //Cool range method
     public float crossfadeDuration = 1f;
-
-    [Header("Optional Default Track")]
     public AudioClip startingTrack;
-
     private AudioSource activeSource;
     private AudioSource secondarySource;
+    private AudioSource buttonVFX;
     private Coroutine fadeRoutine;
-
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -27,12 +22,14 @@ public class MusicManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         activeSource = gameObject.AddComponent<AudioSource>();
         secondarySource = gameObject.AddComponent<AudioSource>();
+        buttonVFX = gameObject.AddComponent<AudioSource>();
         activeSource.loop = true;
         secondarySource.loop = true;
         activeSource.playOnAwake = false;
         secondarySource.playOnAwake = false;
+        buttonVFX.loop = false;
+        buttonVFX.playOnAwake =false;
     }
-
     void Start()
     {
         if (startingTrack != null)
@@ -48,12 +45,24 @@ public class MusicManager : MonoBehaviour
         {
             activeSource.clip = newClip;
             activeSource.volume = masterVolume;
-            activeSource.Play();
+            //activeSource.Play();
         }
         else
         {
             fadeRoutine = StartCoroutine(CrossfadeRoutine(newClip));
         }
+    }
+    public void ButtonHover()
+    {
+        buttonVFX.clip = Resources.Load<AudioClip>("Audio Files/MenuVFX/ButtonHover");
+        buttonVFX.volume = masterVolume;
+        buttonVFX.Play();
+    }
+    public void ButtonPress()
+    {
+        buttonVFX.clip = Resources.Load<AudioClip>("Audio Files/MenuVFX/ButtonP1");
+        buttonVFX.volume = masterVolume;
+        buttonVFX.Play();
     }
     public void SetVolume(float volume)
     {

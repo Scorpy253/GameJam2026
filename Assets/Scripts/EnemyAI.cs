@@ -115,12 +115,10 @@ public class RangedEnemy : BasicEnemy
         if (spellCache.TryGetValue(element, out GameObject cachedSpell))
             return cachedSpell;
         GameObject loadedSpell = Resources.Load<GameObject>($"SpellPrefabs/BulletPlaceholder");
-
         if (loadedSpell == null)
             Debug.LogWarning($"Spell prefab not found at Resources/Spells/BulletPlaceholder");
         else
             spellCache[element] = loadedSpell;
-
         return loadedSpell;
     }
     public override void MoveTowardsEnemy()

@@ -1,27 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
 public class CastInputUI : MonoBehaviour
 {
     [Header("UI Elements")]
     [SerializeField] private CanvasGroup canvasGroup;
-    [SerializeField] private RectTransform arrowContainer;
+    [SerializeField] private RectTransform spellListContainer;
+    [SerializeField] private GameObject spellRowPrefab;
     [SerializeField] private Image arrowIconPrefab;
-
-    [Header("Arrow Sprites")]
-    [SerializeField] private Sprite upSprite;
-    [SerializeField] private Sprite downSprite;
-    [SerializeField] private Sprite leftSprite;
-    [SerializeField] private Sprite rightSprite;
-
-    [Header("Translucent Setting")]
+    [Header("Normal Arrow Sprites")]
+    [SerializeField] private Sprite upNormal;
+    [SerializeField] private Sprite downNormal;
+    [SerializeField] private Sprite leftNormal;
+    [SerializeField] private Sprite rightNormal;
+    [Header("Glowing Arrow Sprites")]
+    [SerializeField] private Sprite upGlow;
+    [SerializeField] private Sprite downGlow;
+    [SerializeField] private Sprite leftGlow;
+    [SerializeField] private Sprite rightGlow;
+    [Header("Settings")]
     [Range(0.05f, 1f)]
     [SerializeField] private float translucentAlpha = 0.5f;
-    [SerializeField] private float popScale = 1.2f;
-
-    private readonly List<Image> activeIcons = new List<Image>();
-
+    private readonly List<GameObject> spawnedRows = new List<GameObject>();
     private void Awake()
     {
         if (canvasGroup != null)
@@ -31,64 +31,56 @@ public class CastInputUI : MonoBehaviour
             canvasGroup.blocksRaycasts = false;
         }
     }
-
-    public void SetCastingState(bool isCasting, List<SpellsList.Arrow> currentInputs)
+    public void SetCastingState(bool isCasting)
     {
         if (canvasGroup != null)
             canvasGroup.alpha = isCasting ? translucentAlpha : 0f;
-
-        if (!isCasting)
+        ClearDisplay();
+    }
+    public void ClearDisplay()
+    {
+        for (int i = 0; i < spawnedRows.Count; i++)
         {
-            ClearIcons();
+            if (spawnedRows[i] != null)
+            {
+                spawnedRows[i].transform.SetParent(null);
+                Destroy(spawnedRows[i]);
+            }
+        }
+        spawnedRows.Clear();
+    }
+    public void AddValidSpell(EquippedSpells spell, int matchedCount)
+    {
+        if (spellListContainer == null || spellRowPrefab == null || arrowIconPrefab == null || spell == null)
             return;
-        }
-
-        UpdateInputs(currentInputs);
-    }
-
-    public void UpdateInputs(List<SpellsList.Arrow> inputs)
-    {
-        if (arrowContainer == null || arrowIconPrefab == null) return;
-
-        int count = inputs != null ? inputs.Count : 0;
-
-        while (activeIcons.Count > count)
+        GameObject rowObj = Instantiate(spellRowPrefab, spellListContainer);
+        Image iconImg = rowObj.GetComponent<Image>();
+        if (iconImg != null)
         {
-            int last = activeIcons.Count - 1;
-            if (activeIcons[last] != null)
-                Destroy(activeIcons[last].gameObject);
-            activeIcons.RemoveAt(last);
+            Sprite loadedSprite = Resources.Load<Sprite>($"SpellIcons/{spell.SpellName}");
+            if (loadedSprite == null)
+                Debug.LogWarning($"Icon not found at Resources/SpellIcons/{spell.SpellName}");
+            iconImg.sprite = loadedSprite;
         }
-
-        for (int i = 0; i < count; i++)
+        Transform arrowHolder = rowObj.transform.GetChild(0);
+        for (int i = 0; i < spell.SpellArrow.Length; i++)
         {
-            bool isNew = i >= activeIcons.Count;
-            Image icon = isNew ? Instantiate(arrowIconPrefab, arrowContainer) : activeIcons[i];
-
-            icon.sprite = GetSprite(inputs[i]);
-            icon.rectTransform.localScale = isNew ? Vector3.one * popScale : Vector3.one;
-
-            if (isNew)
-                activeIcons.Add(icon);
+            Image arrowImg = Instantiate(arrowIconPrefab, arrowHolder);
+            bool isGlowing = i < matchedCount;
+            arrowImg.sprite = GetArrowSprite(spell.SpellArrow[i], isGlowing);
         }
+        spawnedRows.Add(rowObj);
     }
-
-    private void ClearIcons()
+    private Sprite GetArrowSprite(SpellsList.Arrow arrow, bool glowing) => (arrow, glowing) switch
     {
-        for (int i = 0; i < activeIcons.Count; i++)
-        {
-            if (activeIcons[i] != null)
-                Destroy(activeIcons[i].gameObject);
-        }
-        activeIcons.Clear();
-    }
-
-    private Sprite GetSprite(SpellsList.Arrow arrow) => arrow switch
-    {
-        SpellsList.Arrow.Up => upSprite,
-        SpellsList.Arrow.Down => downSprite,
-        SpellsList.Arrow.Left => leftSprite,
-        SpellsList.Arrow.Right => rightSprite,
-        _ => upSprite
+        (SpellsList.Arrow.Up, false) => upNormal,
+        (SpellsList.Arrow.Down, false) => downNormal,
+        (SpellsList.Arrow.Left, false) => leftNormal,
+        (SpellsList.Arrow.Right, false) => rightNormal,
+        (SpellsList.Arrow.Up, true) => upGlow,
+        (SpellsList.Arrow.Down, true) => downGlow,
+        (SpellsList.Arrow.Left, true) => leftGlow,
+        (SpellsList.Arrow.Right, true) => rightGlow,
+        _ => upNormal
     };
 }

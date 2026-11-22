@@ -1,9 +1,5 @@
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
-using UnityEngine.Windows;
 using UnityEngine.InputSystem;
-using static UnityEngine.Rendering.DebugUI;
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Collections;
@@ -18,8 +14,7 @@ public class PlayerInputs : MonoBehaviour
     private SpellExecutor spellExecutor;
     private PlayerInformation playerInfo;
     private InputAction shiftAction;
-
-    [SerializeField] private CastInputUI castInputUI;
+    private CastInputUI castInputUI;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -27,9 +22,9 @@ public class PlayerInputs : MonoBehaviour
         playerInfo = GetComponent<PlayerInformation>();
         spellExecutor = GetComponent<SpellExecutor>();
         shiftAction = GetComponent<PlayerInput>().actions["Shift"];
-
+        castInputUI = GetComponent<CastInputUI>();
         if (castInputUI != null)
-            castInputUI.SetCastingState(false, castingPress);
+            castInputUI.SetCastingState(false);
     }
     public void OnMove(InputValue moving)
     {
@@ -47,10 +42,8 @@ public class PlayerInputs : MonoBehaviour
     }
     private IEnumerator WhileHoldingShift()
     {
-        Casting = true;
         if (castInputUI != null)
-            castInputUI.SetCastingState(true, castingPress);
-
+            castInputUI.SetCastingState(true);
         while (shiftAction.IsPressed())
         {
             Casting = true;
@@ -59,7 +52,8 @@ public class PlayerInputs : MonoBehaviour
         Casting = false;
         castingPress.Clear();
         if (castInputUI != null)
-            castInputUI.SetCastingState(false, castingPress);
+            castInputUI.SetCastingState(false);
+        ResetIgnoredSpells();
         shiftRoutine = null;
     }
     public void OnCast(InputValue casting)
@@ -79,43 +73,45 @@ public class PlayerInputs : MonoBehaviour
     {
         castingPress.Add(input);
         if (castInputUI != null)
-            castInputUI.UpdateInputs(castingPress);
-        int c = 0;
-        foreach(SpellsList.Arrow cast in castingPress) //for every input the player recently did to cast
-        {
-            //Debug.Log("Checking Arrow");
-            foreach(EquippedSpells Arrows in GetComponent<PlayerInformation>().currentSpells) //in each currentspell
-            {
-                if (Arrows.SpellArrow.Length != c && Arrows.SpellArrow.Length > c)
-                {
-                    if (cast == Arrows.SpellArrow[c])
-                    {
-                        //Debug.Log("CORRECT");
-                        if (Arrows.SpellArrow.Length == c + 1)
-                        {
-                            spellExecutor.CastSpellFromSlot(Arrows.SpellSlot, mybody.transform.position);
-                            //Debug.Log("FIREBALLLLLLLLL");
-                            //CODE TO CHOOSE SPELL
-                            castingPress.Clear();
-                            if (castInputUI != null)
-                                castInputUI.UpdateInputs(castingPress);
-                            return;
-                        }
-                        //CODE TO HIGHLIGHT ARROWS
+            castInputUI.ClearDisplay();
+        int c = castingPress.Count - 1;
 
-                        continue;
-                    }
-                    else
+        foreach(EquippedSpells Arrows in playerInfo.currentSpells) //in each currentspell
+        {
+            if (Arrows.SpellArrow.Length > c && !Arrows.ignored)
+            {
+                if (input == Arrows.SpellArrow[c])
+                {
+                    //Debug.Log("CORRECT");
+                    if (Arrows.SpellArrow.Length == c + 1)
                     {
-                        //CODE TO MAKE THIS SPECIFIC SPELL IGNORABLE/DIM DOWN
+                        spellExecutor.CastSpellFromSlot(Arrows.SpellSlot, mybody.transform.position);
+                        //Debug.Log("FIREBALLLLLLLLL");
+                        //CODE TO CHOOSE SPELL
+                        castingPress.Clear();
+                        ResetIgnoredSpells();
+                        if (castInputUI != null)
+                            castInputUI.SetCastingState(true);
+                        return;
                     }
+                    //CODE TO HIGHLIGHT ARROWS
+                    if (castInputUI != null)
+                        castInputUI.AddValidSpell(Arrows, c + 1);
+                    continue;
                 }
                 else
                 {
-                    //CODE TO DARKEN THE ARROW
+                    Arrows.ignored = true;
+                    //CODE TO MAKE THIS SPECIFIC SPELL IGNORABLE/DIM DOWN
                 }
             }
-            c++;
+        }   
+    }
+    private void ResetIgnoredSpells()
+    {
+        foreach (EquippedSpells spell in playerInfo.currentSpells)
+        {
+            spell.ignored = false;
         }
     }
     // Update is called once per frame

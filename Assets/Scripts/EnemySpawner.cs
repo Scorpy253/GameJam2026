@@ -13,7 +13,6 @@ public class EnemySpawner : MonoBehaviour
     void Update()
     {
         if (enemyPrefab == null || spawnPoints.Length == 0) return;
-
         timer += Time.deltaTime;
         if (timer >= spawnInterval)
         {
@@ -21,7 +20,6 @@ public class EnemySpawner : MonoBehaviour
             timer = 0f;
         }
     }
-
     void SpawnEnemy()
     {
         Transform point = spawnPoints[Random.Range(0, spawnPoints.Length)];

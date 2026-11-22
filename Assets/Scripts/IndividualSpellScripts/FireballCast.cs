@@ -7,9 +7,9 @@ public class FireballCast : MonoBehaviour
     {
         
     }
-    public void OnCast(Vector2 aimDir, float finalDamage, string ownerTag, Transform caster)
+    public void OnCasting(Vector2 aimDir, float finalDamage, string ownerTag, Transform caster)
     {
-
+        
     }
     // Update is called once per frame
     void Update()
