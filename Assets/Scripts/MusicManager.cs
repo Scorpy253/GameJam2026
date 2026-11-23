@@ -10,6 +10,7 @@ public class MusicManager : MonoBehaviour
     private AudioSource activeSource;
     private AudioSource secondarySource;
     private AudioSource buttonVFX;
+    private AudioSource swappingSource;
     private Coroutine fadeRoutine;
     void Awake()
     {
@@ -22,6 +23,7 @@ public class MusicManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
         activeSource = gameObject.AddComponent<AudioSource>();
         secondarySource = gameObject.AddComponent<AudioSource>();
+        swappingSource = gameObject.AddComponent<AudioSource>();
         buttonVFX = gameObject.AddComponent<AudioSource>();
         activeSource.loop = true;
         secondarySource.loop = true;
@@ -37,7 +39,6 @@ public class MusicManager : MonoBehaviour
     }
     public void PlayMusic(AudioClip newClip, bool crossfade = true)
     {
-        if (newClip == null) return;
         if (activeSource.clip == newClip && activeSource.isPlaying) return;
         if (fadeRoutine != null)
             StopCoroutine(fadeRoutine);
@@ -86,7 +87,6 @@ public class MusicManager : MonoBehaviour
         {
             timer += Time.unscaledDeltaTime;
             float t = timer / crossfadeDuration;
-
             activeSource.volume = Mathf.Lerp(startVolume, 0f, t);
             secondarySource.volume = Mathf.Lerp(0f, masterVolume, t);
             yield return null;

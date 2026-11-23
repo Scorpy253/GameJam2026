@@ -15,7 +15,7 @@ public class MoveProjectile : MonoBehaviour
     {
         this.transform.position += TargetDirection * 3 * Time.deltaTime;
         timealive += Time.deltaTime;
-        if (timealive >= 20)
+        if (timealive >= 7)
         {
             Destroy(gameObject);
         }

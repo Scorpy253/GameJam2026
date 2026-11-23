@@ -34,7 +34,6 @@ public class EnemyAI : MonoBehaviour
     {
         ActiveAI.MoveTowardsEnemy();
         ActiveAI.Cooldown += Time.deltaTime;
-        //ACTIVE AI LOGIC HERE
         if(ActiveAI.HP <= 0)
         {
             ActiveAI.PayPlayer();

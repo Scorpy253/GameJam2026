@@ -1,5 +1,4 @@
 using System.IO;
-using UnityEditor.Overlays;
 using UnityEngine;
 
 public static class SaveSystem
@@ -11,7 +10,6 @@ public static class SaveSystem
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
     }
-
     public static SaveData Load()
     {
         if (!File.Exists(SavePath))
@@ -20,9 +18,7 @@ public static class SaveSystem
         string json = File.ReadAllText(SavePath);
         return JsonUtility.FromJson<SaveData>(json);
     }
-
     public static bool HasSaveFile() => File.Exists(SavePath);
-
     public static void DeleteSave()
     {
         if (File.Exists(SavePath))

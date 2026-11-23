@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Collections;
+using UnityEngine.Windows;
 
 public class PlayerInputs : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class PlayerInputs : MonoBehaviour
     private PlayerInformation playerInfo;
     private InputAction shiftAction;
     private CastInputUI castInputUI;
+    [SerializeField] private SpriteRenderer ArenaFloor;
+    private Animator animator;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -23,12 +26,29 @@ public class PlayerInputs : MonoBehaviour
         spellExecutor = GetComponent<SpellExecutor>();
         shiftAction = GetComponent<PlayerInput>().actions["Shift"];
         castInputUI = GetComponent<CastInputUI>();
+        animator = GetComponent<Animator>();
         if (castInputUI != null)
             castInputUI.SetCastingState(false);
     }
     public void OnMove(InputValue moving)
     {
         moveInput = moving.Get<Vector2>();
+        UpdateMoveAnimation(moveInput);
+    }
+    private void UpdateMoveAnimation(Vector2 input)
+    {
+        int dir = 0; // 0 = Idle
+
+        if (input.sqrMagnitude > 0.01f)
+        {
+            // Vertical priority on diagonals (swap >= to > for horizontal priority)
+            if (Mathf.Abs(input.y) >= Mathf.Abs(input.x))
+                dir = input.y < 0f ? 1 : 2; // 1 = WalkingFront, 2 = WalkingBack
+            else
+                dir = input.x < 0f ? 3 : 4; // 3 = WalkingLeft, 4 = WalkingRight
+        }
+        animator.SetInteger("Direction", dir);
+        animator.SetInteger("Idling", dir);
     }
     public void OnShift(InputValue shift)
     {
@@ -105,7 +125,7 @@ public class PlayerInputs : MonoBehaviour
                     //CODE TO MAKE THIS SPECIFIC SPELL IGNORABLE/DIM DOWN
                 }
             }
-        }   
+        }
     }
     private void ResetIgnoredSpells()
     {
@@ -117,6 +137,6 @@ public class PlayerInputs : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        mybody.linearVelocity = moveInput.normalized*playerInfo.MVSPD;
+        mybody.linearVelocity = moveInput*playerInfo.MVSPD;
     }
 }
