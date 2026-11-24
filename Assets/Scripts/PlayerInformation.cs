@@ -20,7 +20,7 @@ public class PlayerInformation : MonoBehaviour
         currentSpells.Add(new EquippedSpells(new Fireball(), 1)); //TESTING
         currentSpells.Add(new EquippedSpells(new Waterball(), 2)); //TESTING
         currentSpells.Add(new EquippedSpells(new Earthball(), 3)); //TESTING
-        currentSpells.Add(new EquippedSpells(new Lightball(), 4)); //TESTING
+        currentSpells.Add(new EquippedSpells(new Lightningball(), 4)); //TESTING
         currentSpells.Add(new EquippedSpells(new Windball(), 5)); //TESTING
     }
 
