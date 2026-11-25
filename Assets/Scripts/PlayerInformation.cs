@@ -14,35 +14,71 @@ public class PlayerInformation : MonoBehaviour
     public int Windcoin = 0;
     public int Lightcoin = 0;
     public List<EquippedSpells> currentSpells = new List<EquippedSpells>();
+    private int startingHP;
+    private float startingSpeed;
+    private int startingDmg;
+    void Awake()
+    {
+        startingHP = BaseHP;
+        startingSpeed = MVSPD;
+        startingDmg = BaseDMG;
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentSpells.Add(new EquippedSpells(new Fireball(), 1)); //TESTING
-        currentSpells.Add(new EquippedSpells(new Waterball(), 2)); //TESTING
-        currentSpells.Add(new EquippedSpells(new Earthball(), 3)); //TESTING
-        currentSpells.Add(new EquippedSpells(new Lightningball(), 4)); //TESTING
-        currentSpells.Add(new EquippedSpells(new Windball(), 5)); //TESTING
+        LoadFromSave();
     }
-
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    public void AddSpellToEquips(SpellsList spelltoadd,int slot)
+    public void LoadFromSave()
     {
-        if (spelltoadd == null) return;
+        SaveData data = SaveSystem.Load();
+
+        BaseHP = startingHP + (data.hpLevel * 5);
+        MVSPD = startingSpeed + (data.speedLevel * 0.5f);
+        BaseDMG = startingDmg + (data.dmgLevel * 2);
+
+        totalGold = data.totalGold;
+        Firecoin = data.Firecoin;
+        Watercoin = data.Watercoin;
+        Earthcoin = data.Earthcoin;
+        Windcoin = data.Windcoin;
+        Lightcoin = data.Lightcoin;
+
+        currentSpells = new List<EquippedSpells>(data.equippedSpells);
+    }
+    public void AddSpellToEquips(SpellsList spelltoadd, int slot)
+    {
         currentSpells.RemoveAll(s => s.SpellName == spelltoadd.spellName);
         EquippedSpells newEquip = new EquippedSpells(spelltoadd, slot);
+
         for (int i = 0; i < currentSpells.Count; i++)
         {
             if (currentSpells[i].SpellSlot == slot)
             {
                 currentSpells[i] = newEquip;
+                SaveCurrentData();
                 return;
             }
         }
+
         currentSpells.Add(newEquip);
+        SaveCurrentData();
+    }
+    private void SaveCurrentData()
+    {
+        SaveData data = SaveSystem.Load();
+        data.totalGold = totalGold;
+        data.Firecoin = Firecoin;
+        data.Watercoin = Watercoin;
+        data.Earthcoin = Earthcoin;
+        data.Windcoin = Windcoin;
+        data.Lightcoin = Lightcoin;
+        data.equippedSpells = new List<EquippedSpells>(currentSpells);
+        SaveSystem.Save(data);
     }
     public void TakeDamage(int totalDmg)
     {
