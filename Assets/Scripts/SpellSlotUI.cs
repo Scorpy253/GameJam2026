@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-
 public class SpellSlotUI : MonoBehaviour
 {
     [HideInInspector] public SpellsList spellData;
@@ -13,23 +12,12 @@ public class SpellSlotUI : MonoBehaviour
         spellData = spell;
         loadedIcon = icon;
         parentMenu = menu;
-        if (iconImage == null)
-            iconImage = GetComponent<Image>() ?? GetComponentInChildren<Image>();
-        if (iconImage != null)
-            iconImage.sprite = icon;
-        if (slotButton == null)
-            slotButton = GetComponent<Button>() ?? GetComponentInChildren<Button>();
-        if (slotButton != null)
-        {
-            slotButton.onClick.RemoveAllListeners();
-            slotButton.onClick.AddListener(OnSlotClicked);
-        }
+        iconImage.sprite = icon;
+        slotButton.onClick.RemoveAllListeners();
+        slotButton.onClick.AddListener(OnSlotClicked);
     }
     private void OnSlotClicked()
     {
-        if (parentMenu != null)
-        {
-            parentMenu.OnSlotPressed(this);
-        }
+        parentMenu.OnSlotPressed(this);
     }
 }

@@ -81,8 +81,6 @@ public class PlayerInputs : MonoBehaviour
         if (Casting)
         {
             Vector2 dir = casting.Get<Vector2>();
-            //Debug.Log(casting.Get<Vector2>());
-            if (dir == Vector2.zero) return;
             if (dir.y > 0.5f) CheckSpells(SpellsList.Arrow.Up);
             else if (dir.y < -0.5f) CheckSpells(SpellsList.Arrow.Down);
             else if (dir.x < -0.5f) CheckSpells(SpellsList.Arrow.Left);

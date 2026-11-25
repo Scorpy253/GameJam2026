@@ -17,7 +17,7 @@ public class SpellsList
     public string Desc;
 }
 
-class Fireball : SpellsList //DONE
+class Fireball : SpellsList
 {
     public Fireball()
     {

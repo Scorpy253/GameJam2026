@@ -41,11 +41,9 @@ public class PlayerInformation : MonoBehaviour
     public void LoadFromSave()
     {
         SaveData data = SaveSystem.Load();
-
         BaseHP = startingHP + (data.hpLevel * 5);
         MVSPD = startingSpeed + (data.speedLevel * 0.5f);
         BaseDMG = startingDmg + (data.dmgLevel * 2);
-
         totalGold = data.totalGold;
         Firecoin = data.Firecoin;
         Watercoin = data.Watercoin;
@@ -59,7 +57,6 @@ public class PlayerInformation : MonoBehaviour
     {
         currentSpells.RemoveAll(s => s.SpellName == spelltoadd.spellName);
         EquippedSpells newEquip = new EquippedSpells(spelltoadd, slot);
-
         for (int i = 0; i < currentSpells.Count; i++)
         {
             if (currentSpells[i].SpellSlot == slot)
@@ -69,7 +66,6 @@ public class PlayerInformation : MonoBehaviour
                 return;
             }
         }
-
         currentSpells.Add(newEquip);
         SaveCurrentData();
     }

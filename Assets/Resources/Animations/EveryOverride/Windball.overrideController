@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Windball
+  m_Controller: {fileID: 9100000, guid: dd137d2038dc2ff4bbda06998defe217, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 835718a834ea4264dbd04694faf56fba, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: c572bf7c6556b9c429206d02b214bed0, type: 2}
