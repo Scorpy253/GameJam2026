@@ -17,6 +17,11 @@ public class PlayerInformation : MonoBehaviour
     private int startingHP;
     private float startingSpeed;
     private int startingDmg;
+    public SpellsList.Element CurrentArenaElement = SpellsList.Element.Wind;
+    public void SetArenaElement(SpellsList.Element newElement)
+    {
+        CurrentArenaElement = newElement;
+    }
     void Awake()
     {
         startingHP = BaseHP;
