@@ -20,7 +20,8 @@ public class SpellExecutor : MonoBehaviour
         float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
         float totalDamage = equipped.SpellDmg + (playerInfo.BaseDMG * equipped.SpellScaling);
         GameObject spawned = Instantiate(prefab, transform.position, Quaternion.Euler(0f, 0f, angle));
-        spawned.GetComponent<SpellInterface>().OnCasting(aimDir, totalDamage, transform, playerInfo.CurrentArenaElement);
+        if (spawned.TryGetComponent(out SpellInterface spell))
+            spell.OnCasting(aimDir, totalDamage, transform, playerInfo.CurrentArenaElement);
     }
 
     private GameObject GetSpellPrefab(string spellName)

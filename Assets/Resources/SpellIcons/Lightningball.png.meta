@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 842f4fec50b911f49bcf2033c59f9a09
+guid: fe03c2982fcba2148a20a20d3f375cd9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7686454192533393444
-    second: Lightball_0
+      213: -1115672940382489693
+    second: Lightningball_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Lightball_0
+      name: Lightningball_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 420d3401d55cbaa60800000000000000
-      internalID: 7686454192533393444
+      spriteID: 3a37cfe2f555480f0800000000000000
+      internalID: -1115672940382489693
       vertices: []
       indices: 
       edges: []

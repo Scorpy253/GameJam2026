@@ -12,6 +12,8 @@ public class SpellSlotUI : MonoBehaviour
         spellData = spell;
         loadedIcon = icon;
         parentMenu = menu;
+        if (iconImage == null) iconImage = GetComponent<Image>() ?? GetComponentInChildren<Image>();
+        if (slotButton == null) slotButton = GetComponent<Button>() ?? GetComponentInChildren<Button>();
         iconImage.sprite = icon;
         slotButton.onClick.RemoveAllListeners();
         slotButton.onClick.AddListener(OnSlotClicked);
